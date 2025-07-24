@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Environment variables
+*.env
+
+# Flask cache and logs
+instance/
+*.log
+
+# VS Code / IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker
+*.pid
+*.sock
+docker-compose.override.yml
+
+# Python dependency files backup
+pip-log.txt
+pip-delete-this-directory.txt
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Node.js (if used with frontend)
+node_modules/
+dist/
+build/
