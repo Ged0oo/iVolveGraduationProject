@@ -1,29 +1,24 @@
 <p align="center">
-  <img src="static/logos/nti-logo.png" height="100"/>
+  <img src="static/logos/nti-logo.png" height="90"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="static/logos/ivolve-logo.png" height="100"/>
+  <img src="static/logos/ivolve-logo.png" height="90"/>
 </p>
 
-<h1 align="center" style="font-family: 'Poppins', sans-serif; color: #e0e0e0; font-size: 2.8rem;">
-   DevOps Graduation Project
-</h1>
+<h1 align="center">DevOps Graduation Project</h1>
 
-<h3 align="center" style="font-family: 'Poppins', sans-serif; color: #b0bec5;">
-  In Collaboration with iVolve Technologies
-</h3>
+<h3 align="center">In Collaboration with iVolve Technologies</h3>
 
-<p align="center" style="max-width: 700px; font-size: 1.1rem; color: #cfd8dc;">
-  This project represents the culmination of the DevOps training at the National Telecommunication Institute (NTI),
-  in partnership with iVolve Technologies. 
+<p align="center">
+  Final project for the NTI DevOps program, containerizing and orchestrating a Python web app using Docker and Kubernetes.
 </p>
 
 ---
 
-## 🐳 Containerization with Docker & Docker Compose
+## 🐳 Docker & Docker Compose
 
-This project is containerized using **Docker** and **Docker Compose** to streamline development, deployment, and environment consistency.
+The app is containerized using **Docker** and configured for local development with **Docker Compose**.
 
-### 📦 Project Structure
+### Project Structure
 
 ```
 iVolveGraduationProject/
@@ -37,20 +32,16 @@ iVolveGraduationProject/
 └── README.md
 ```
 
----
+### Dockerfile (Multi-Stage)
 
-### 🏗️ Dockerfile (Multi-Stage)
-
-The Dockerfile uses **multi-stage builds** to keep the image lightweight and secure:
-
-```Dockerfile
-# Stage 1: Install dependencies
+```dockerfile
+# Build dependencies
 FROM python:3.11-slim AS builder
 WORKDIR /app
 COPY app/requirements.txt .
 RUN pip install --upgrade pip && pip install --user -r requirements.txt
 
-# Stage 2: Runtime container
+# Runtime image
 FROM python:3.11-slim
 WORKDIR /app
 COPY app/ .
@@ -60,11 +51,7 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 ```
 
----
-
-### 🧩 docker-compose.yml
-
-This Compose file builds the image, exposes port 5000, and supports local development with mounted volumes.
+### docker-compose.yml
 
 ```yaml
 version: '3.8'
@@ -85,49 +72,86 @@ services:
     command: python app.py
 ```
 
----
-
-### 🚀 Run the App
-
-1. **Build and start the app**
+### Run Locally
 
 ```bash
 docker-compose up --build
 ```
 
-2. **Access it in your browser:**
-
-```
-http://localhost:5000
-```
+Access: [http://localhost:5000](http://localhost:5000)
 
 ---
 
-### ☁️ Push to Docker Hub
+## ☁️ Docker Hub
 
-1. **Login to Docker Hub:**
+To publish the image:
 
 ```bash
 docker login
-```
-
-2. **Build and push the image:**
-
-```bash
 docker-compose build
 docker push mnagy156/flask-app:latest
 ```
 
 ---
 
-### ✅ Notes
+## 📦 Kubernetes Deployment (document=aion)
 
-- Make sure `app.py` has this line for Docker networking to work:
-  ```python
-  app.run(host='0.0.0.0', port=5000, debug=True)
-  ```
+The app is deployed on a **local Kubernetes cluster (Minikube)** with custom YAML manifests.
 
-- You can remove the volume mount in production for performance and security.
+### Manifests Location
 
+```
+k8s/
+├── namespace.yaml
+├── deployment.yaml
+└── service.yaml
+```
+
+### Deployment Steps
+
+1. **Start Minikube**
+   ```bash
+   minikube start
+   ```
+
+2. **Use Minikube’s Docker & Build Image**
+   ```bash
+   eval $(minikube docker-env)
+   docker build -t ivolve-app:latest .
+   ```
+
+3. **Apply Kubernetes Manifests**
+   ```bash
+   kubectl apply -f k8s/namespace.yaml
+   kubectl apply -f k8s/ -n ivolve
+   ```
+
+4. **Access the App**
+   ```bash
+   minikube service ivolve-service -n ivolve
+   ```
+
+   Output example:
+   ```
+   http://192.168.49.2:30007
+   ```
+
+### Notes
+
+- `imagePullPolicy: Never` is used to run locally built images in Minikube.
+- Pod and service are deployed in the custom namespace `ivolve`.
 
 ---
+
+## ✅ Final Notes
+
+- Ensure `app.py` has this line for container compatibility:
+  ```python
+  app.run(host='0.0.0.0', port=5000)
+  ```
+
+- Production environments should remove mounted volumes for better security.
+
+---
+
+> Maintained by Mohamed Nagy – NTI DevOps 2025

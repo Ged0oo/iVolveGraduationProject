@@ -49,3 +49,17 @@ coverage.xml
 node_modules/
 dist/
 build/
+
+# K8S
+__pycache__/
+*.pyc
+*.log
+.env
+.env.*
+.vscode/
+.idea/
+.DS_Store
+node_modules/
+__pycache__/
+.kube/
+.minikube/

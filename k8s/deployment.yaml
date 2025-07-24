@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ivolve-app
+  namespace: ivolve
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ivolve-app
+  template:
+    metadata:
+      labels:
+        app: ivolve-app
+    spec:
+      containers:
+        - name: ivolve-container
+          image: ivolve-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          env:
+            - name: FLASK_ENV
+              value: development
+            - name: FLASK_APP
+              value: app.py
+          command: ["python", "app.py"]
