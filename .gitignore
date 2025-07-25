@@ -10,6 +10,8 @@ ENV/
 
 # Environment variables
 *.env
+.env
+.env.*
 
 # Flask cache and logs
 instance/
@@ -50,16 +52,14 @@ node_modules/
 dist/
 build/
 
-# K8S
-__pycache__/
-*.pyc
-*.log
-.env
-.env.*
-.vscode/
-.idea/
-.DS_Store
-node_modules/
-__pycache__/
+# Kubernetes
 .kube/
 .minikube/
+
+# Terraform
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform.lock.hcl
+terraform/crash.log
+terraform/*.tfvars
