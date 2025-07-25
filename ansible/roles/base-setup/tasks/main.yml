@@ -1,0 +1,62 @@
+- name: Install essential packages (Git, Docker, pip)
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - git
+    - docker
+    - python3-pip
+  tags: base-setup
+
+- name: Import Amazon Corretto GPG key
+  rpm_key:
+    state: present
+    key: https://yum.corretto.aws/corretto.key
+  tags: base-setup
+
+- name: Download Amazon Corretto 17 RPM
+  get_url:
+    url: "https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.rpm"
+    dest: /tmp/amazon-corretto-17.rpm
+    mode: '0644'
+  tags: base-setup
+
+- name: Install Amazon Corretto 17
+  yum:
+    name: /tmp/amazon-corretto-17.rpm
+    state: present
+  tags: base-setup
+
+- name: Check Java path installed by Corretto
+  command: readlink -f /usr/bin/java
+  register: java_path
+  changed_when: false
+  tags: base-setup
+
+- name: Set Java 17 as default using alternatives
+  alternatives:
+    name: java
+    path: "{{ java_path.stdout }}"
+  when: java_path.stdout is defined
+  tags: base-setup
+
+- name: Download Docker Compose binary
+  get_url:
+    url: https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+  tags: base-setup
+
+- name: Create symbolic link for docker-compose
+  file:
+    src: /usr/local/bin/docker-compose
+    dest: /usr/bin/docker-compose
+    state: link
+  tags: base-setup
+
+- name: Enable and start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: true
+  tags: base-setup

@@ -1,0 +1,8 @@
+---
+- name: Setup EC2 server
+  hosts: all
+  become: true
+
+  roles:
+    - base-setup
+    - jenkins-install

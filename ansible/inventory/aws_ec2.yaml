@@ -1,0 +1,15 @@
+plugin: aws_ec2
+regions:
+  - us-west-1
+
+filters:
+  tag:Project: iVolve
+
+keyed_groups:
+  - key: tags.Name
+    prefix: tag
+
+hostnames:
+  - public_ip_address
+
+strict: False

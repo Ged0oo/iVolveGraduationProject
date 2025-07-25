@@ -1,17 +1,5 @@
 # DevOps Graduation Project
 
-<p align="center">
-  <img src="static/logos/nti-logo.png" height="90"/>
-      
-  <img src="static/logos/ivolve-logo.png" height="90"/>
-</p>
-
-<h3 align="center">In Collaboration with iVolve Technologies</h3>
-
-<p align="center">
-  Final project for the NTI DevOps program, containerizing and orchestrating a Python web app using Docker and Kubernetes.
-</p>
-
 ---
 
 ## Docker & Docker Compose
@@ -210,6 +198,53 @@ terraform output jenkins_public_ip
 - Tested on a non-production AWS account.
 - Tags applied to all resources for better management.
 
+## Configuration Management with Ansible
+
+Ansible is used for provisioning and configuring the Jenkins server.
+
+### Task Objectives
+
+- Deliver Ansible playbooks for EC2 instance configuration:
+  - Install required packages (Git, Docker, Java).
+  - Install Jenkins.
+  - Use Ansible roles.
+  - Support both static and dynamic inventory.
+- Commit Ansible configuration and modules to the repository.
+
+### Approach
+
+1. **Inventory Configuration**
+
+   - Start with static inventory (`static_hosts.ini`).
+   - Transition to dynamic inventory with AWS EC2 plugin (`aws_ec2.yaml`).
+
+2. **Role Structure**
+
+```
+ansible/
+├── inventory/
+│   ├── static_hosts.ini
+│   └── aws_ec2.yaml
+├── roles/
+│   ├── base-setup/               # Installs git, curl, unzip, etc.
+│   ├── docker-installation/      # Installs Docker engine
+│   └── jenkins-installation/     # Installs and configures Jenkins
+└── site.yml                      # Main playbook including all roles
+```
+
+3. **Playbook Execution**
+
+```bash
+ansible-playbook -i inventory/static_hosts.ini site.yml --check
+ansible-playbook -i inventory/static_hosts.ini site.yml
+```
+
+4. **Best Practices & Optimizations**
+   - Roles initialized using `ansible-galaxy init`.
+   - Tags used for selective execution: `--tags base,docker,jenkins`.
+   - Handlers implemented to restart services when needed.
+
 ---
 
 **Maintained by Mohamed Nagy – NTI DevOps 2025**
+

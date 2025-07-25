@@ -1,0 +1,30 @@
+---
+- name: Add Jenkins repo key
+  ansible.builtin.rpm_key:
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+    state: present
+
+- name: Add Jenkins repo
+  ansible.builtin.yum_repository:
+    name: jenkins
+    description: Jenkins-stable repository
+    baseurl: https://pkg.jenkins.io/redhat-stable
+    gpgcheck: yes
+    gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+    enabled: yes
+
+- name: Install Java 17 if not already
+  ansible.builtin.dnf:
+    name: java-17-amazon-corretto
+    state: present
+
+- name: Install Jenkins
+  ansible.builtin.dnf:
+    name: jenkins
+    state: present
+
+- name: Start and enable Jenkins
+  ansible.builtin.service:
+    name: jenkins
+    state: started
+    enabled: yes
