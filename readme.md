@@ -1,5 +1,17 @@
 # DevOps Graduation Project
 
+<p align="center">
+  <img src="static/logos/nti-logo.png" height="90"/>
+      
+  <img src="static/logos/ivolve-logo.png" height="90"/>
+</p>
+
+<h3 align="center">In Collaboration with iVolve Technologies</h3>
+
+<p align="center">
+  Final project for the NTI DevOps program, containerizing and orchestrating a Python web app using Docker and Kubernetes.
+</p>
+
 ---
 
 ## Docker & Docker Compose
