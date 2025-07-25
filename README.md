@@ -14,7 +14,7 @@
 
 ---
 
-## 🐳 Docker & Docker Compose
+## Docker & Docker Compose
 
 The app is containerized using **Docker** and configured for local development with **Docker Compose**.
 
@@ -80,7 +80,7 @@ docker-compose up --build
 
 Access: [http://localhost:5000](http://localhost:5000)
 
-### ☁️ Docker Hub
+### Docker Hub
 
 To publish the image:
 
@@ -90,7 +90,7 @@ docker-compose build
 docker push mnagy156/flask-app:latest
 ```
 
-## 📦 Kubernetes Deployment
+## Kubernetes Deployment
 
 The app is deployed on a local Kubernetes cluster (Minikube) with custom YAML manifests.
 
@@ -142,7 +142,7 @@ http://192.168.49.2:30007
 - `imagePullPolicy: Never` is used to run locally built images in Minikube.
 - Pod and service are deployed in the custom namespace `ivolve`.
 
-## 📡 Infrastructure Provisioning with Terraform
+## Infrastructure Provisioning with Terraform
 
 The project includes Terraform scripts to provision AWS infrastructure needed to run the Jenkins CI server and related network resources.
 
