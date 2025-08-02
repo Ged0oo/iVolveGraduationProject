@@ -1,73 +1,18 @@
+@Library('my-shared-library') _
+
 pipeline {
-    agent any
+     agent { label 'jenkins-agent-1' }
 
-    environment {
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
-        GIT_CREDENTIALS_ID = 'github-creds'
-        IMAGE_NAME = 'mnagy156/ivolve-app'
-        TAG = "v${env.BUILD_NUMBER}"
-    }
-
-    stages {
-        stage('Build Image') {
+        stages {
+        stage('Pipeline Steps') {
             steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME}:${TAG} ."
-                }
+                buildImage()
+                scanImage()
+                pushImage()
+                deleteImageLocally()
+                updateManifests()
+                pushManifests()
             }
         }
-
-        stage('Scan Image') {
-            steps {
-                echo 'Scanning Docker image for vulnerabilities...'
-            }
-        }
-
-        stage('Push Image') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: env.DOCKER_CREDENTIALS_ID,
-                    usernameVariable: 'USERNAME',
-                    passwordVariable: 'PASSWORD'
-                )]) {
-                    sh '''
-                        echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
-                        docker push ${IMAGE_NAME}:${TAG}
-                    '''
-                }
-            }
-        }
-
-        stage('Delete Image Locally') {
-            steps {
-                sh "docker rmi ${IMAGE_NAME}:${TAG} || true"
-            }
-        }
-
-        // stage('Update and Push Manifests') {
-        //     steps {
-        //         withCredentials([sshUserPrivateKey(
-        //             credentialsId: env.GIT_CREDENTIALS_ID,
-        //             keyFileVariable: 'SSH_KEY'
-        //         )]) {
-        //             sh '''
-        //                 eval `ssh-agent -s`
-        //                 ssh-add "$SSH_KEY"
-
-        //                 git config --global user.name "Jenkins"
-        //                 git config --global user.email "jenkins@ivolve.local"
-
-        //                 rm -rf manifests
-        //                 git clone git@github.com:ged0oo/ivolve-k8s-manifests.git manifests
-        //                 cd manifests
-
-        //                 sed -i "s|image: .*|image: ${IMAGE_NAME}:${TAG}|" deployment.yaml
-        //                 git add deployment.yaml
-        //                 git commit -m "Update image tag to ${TAG}"
-        //                 git push origin main
-        //             '''
-        //         }
-        //     }
-        // }
-    }
+   }
 }

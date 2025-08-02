@@ -251,7 +251,16 @@ ansible-playbook -i inventory/static_hosts.ini site.yml --check
 ansible-playbook -i inventory/static_hosts.ini site.yml
 ```
 
-4. **Best Practices & Optimizations**
+4. **Verify Installation**
+
+After running the playbook, SSH into the EC2 instance and verify that everything is installed correctly:
+
+```bash
+ssh -i ~/<Your-key-location> ec2-user@<EC2_PUBLIC_IP>
+java -version && docker --version && docker-compose --version && systemctl status jenkins --no-pager
+```
+
+5. **Best Practices & Optimizations**
    - Roles initialized using `ansible-galaxy init`.
    - Tags used for selective execution: `--tags base,docker,jenkins`.
    - Handlers implemented to restart services when needed.

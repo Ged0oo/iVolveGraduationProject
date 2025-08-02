@@ -70,7 +70,12 @@ resource "aws_instance" "jenkins" {
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
   key_name               = var.key_name
 
-  monitoring = true 
+  monitoring = true
+
+  root_block_device {
+    volume_size = 16
+    volume_type = "gp2"
+  }
 
   tags = {
     Name = "jenkins-server"
