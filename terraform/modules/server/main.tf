@@ -78,6 +78,6 @@ resource "aws_instance" "jenkins" {
   }
 
   tags = {
-    Name = "jenkins-server"
+    Name = "nagy-ivolve"
   }
 }

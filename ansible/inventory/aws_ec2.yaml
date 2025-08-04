@@ -1,6 +1,6 @@
 plugin: aws_ec2
 regions:
-  - us-west-1
+  - us-esat-1
 
 filters:
   tag:Project: iVolve

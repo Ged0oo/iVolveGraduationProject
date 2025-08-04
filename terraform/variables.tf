@@ -1,5 +1,5 @@
 variable "aws_region" {
-  default = "us-west-1"
+  default = "us-east-1"
 }
 
 variable "vpc_cidr" {
@@ -11,11 +11,11 @@ variable "public_subnet_cidr" {
 }
 
 variable "instance_type" {
-  default = "t2.micro"
+  default = "t2.medium"
 }
 
 variable "ami_id" {
-  default = "ami-061ad72bc140532fd"
+  default = "ami-08a6efd148b1f7504"
 }
 
 variable "key_name" {

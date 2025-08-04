@@ -1,11 +1,21 @@
-- name: Install essential packages (Git, Docker, pip)
-  yum:
-    name: "{{ item }}"
+---
+- name: Update all packages
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: yes
+  when: ansible_distribution == "Amazon Linux"
+  tags: base-setup
+
+- name: Install essential packages
+  dnf:
+    name:
+      - git
+      - docker
+      - python3
+      - python3-pip
+      - containerd
     state: present
-  loop:
-    - git
-    - docker
-    - python3-pip
   tags: base-setup
 
 - name: Import Amazon Corretto GPG key
@@ -16,13 +26,13 @@
 
 - name: Download Amazon Corretto 17 RPM
   get_url:
-    url: "https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.rpm"
+    url: https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.rpm
     dest: /tmp/amazon-corretto-17.rpm
     mode: '0644'
   tags: base-setup
 
 - name: Install Amazon Corretto 17
-  yum:
+  dnf:
     name: /tmp/amazon-corretto-17.rpm
     state: present
   tags: base-setup
@@ -54,9 +64,95 @@
     state: link
   tags: base-setup
 
+- name: Add ec2-user to docker group
+  user:
+    name: ec2-user
+    groups: docker
+    append: yes
+  tags: base-setup
+
+- name: Remove containerd drop-in configuration to avoid conflicts
+  file:
+    path: /etc/systemd/system/containerd.service.d
+    state: absent
+  notify: Reload systemd
+  tags: base-setup
+
+- name: Ensure containerd service file is correct
+  copy:
+    content: |
+      [Unit]
+      Description=containerd container runtime
+      Documentation=https://containerd.io
+      After=network.target local-fs.target
+
+      [Service]
+      ExecStartPre=-/sbin/modprobe overlay
+      ExecStart=/usr/bin/containerd
+      Type=notify
+      Delegate=yes
+      KillMode=process
+      Restart=always
+      RestartSec=5
+      LimitNPROC=infinity
+      LimitCORE=infinity
+      LimitNOFILE=infinity
+      TasksMax=infinity
+      OOMScoreAdjust=-999
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /usr/lib/systemd/system/containerd.service
+    mode: '0644'
+  notify: Reload systemd
+  tags: base-setup
+
+- name: Configure Docker daemon for low memory
+  copy:
+    content: |
+      {
+        "default-ulimit": [
+          "nofile=1024:4096",
+          "nproc=1024:4096"
+        ],
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      }
+    dest: /etc/docker/daemon.json
+    mode: '0644'
+  notify: Restart Docker
+  tags: base-setup
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+  tags: base-setup
+
+- name: Start and enable containerd
+  systemd:
+    name: containerd
+    state: started
+    enabled: yes
+  tags: base-setup
+  ignore_errors: yes
+
 - name: Enable and start Docker service
-  service:
+  systemd:
     name: docker
     state: started
-    enabled: true
+    enabled: yes
+  tags: base-setup
+
+- name: Clean up dnf cache to save disk space
+  ansible.builtin.command:
+    cmd: dnf clean all
+  tags: base-setup
+
+- name: Remove unnecessary files to save disk space
+  file:
+    path: /var/cache/dnf
+    state: absent
   tags: base-setup

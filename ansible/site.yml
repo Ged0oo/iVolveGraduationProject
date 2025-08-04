@@ -2,7 +2,7 @@
 - name: Setup EC2 server
   hosts: all
   become: true
-
+  serial: 1
   roles:
     - base-setup
     - jenkins-install
