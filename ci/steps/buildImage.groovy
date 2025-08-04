@@ -7,3 +7,4 @@ def call() {
 		currentBuild.description = "Built Docker image for myimg"
     }
 }
+return this

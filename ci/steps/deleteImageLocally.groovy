@@ -7,3 +7,4 @@ def call() {
 		currentBuild.description = "Deleted local Docker image for myimg"
     }
 }
+return this

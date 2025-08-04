@@ -1,18 +1,31 @@
-@Library('my-shared-library') _
-
 pipeline {
-     agent { label 'jenkins-agent-1' }
+  agent { label 'jenkins-agent-1' }
 
-        stages {
-        stage('Pipeline Steps') {
-            steps {
-                buildImage()
-                scanImage()
-                pushImage()
-                deleteImageLocally()
-                updateManifests()
-                pushManifests()
-            }
+  stages {
+    stage('Load Scripts') {
+      steps {
+        script {
+          buildImage = load 'ci/steps/buildImage.groovy'
+          scanImage = load 'ci/steps/scanImage.groovy'
+          pushImage = load 'ci/steps/pushImage.groovy'
+          deleteImageLocally = load 'ci/steps/deleteImageLocally.groovy'
+          updateManifests = load 'ci/steps/updateManifests.groovy'
+          pushManifests = load 'ci/steps/pushManifests.groovy'
         }
-   }
+      }
+    }
+
+    stage('Pipeline Steps') {
+      steps {
+        script {
+          buildImage()
+          scanImage()
+          pushImage()
+          deleteImageLocally()
+          updateManifests()
+          pushManifests()
+        }
+      }
+    }
+  }
 }
