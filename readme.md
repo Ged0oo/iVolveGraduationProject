@@ -12,6 +12,11 @@
   Final project for the NTI DevOps program, containerizing and orchestrating a Python web app using Docker and Kubernetes.
 </p>
 
+
+<p align="center">
+  <img src="./static/system.gif" alt="Demo" />
+</p>
+
 ---
 
 ## Docker & Docker Compose
@@ -267,5 +272,47 @@ java -version && docker --version && docker-compose --version && systemctl statu
 
 ---
 
-**Maintained by Mohamed Nagy – NTI DevOps 2025**
+
+## 6. Continuous Deployment with ArgoCD (GitOps)
+
+### Task
+
+Implement GitOps practices using **ArgoCD** to automate application deployment directly from the Git repository.
+
+### How It Works
+
+- **Continuous Monitoring:** ArgoCD continuously monitors the Git repository for any changes to Kubernetes manifests (YAML files).
+- **Automated Sync:** On detecting a change (new commit or PR merge), ArgoCD automatically syncs the updated configuration into the Kubernetes cluster.
+- **State Consistency:** Ensures the live cluster state always matches the declared state in Git.
+- **Visibility & Control:** Provides a web UI and CLI for monitoring application health, sync status, and performing rollbacks.
+
+### How to Apply
+
+Deploy the ArgoCD Application manifest:
+
+```bash
+kubectl apply -f argocd/app-argocd.yaml
+```
+
+### Outcome
+
+- **Fully automated Git-driven deployments** without manual `kubectl apply`.
+- **Version-controlled deployments** — rollbacks can be done by reverting Git commits.
+- **Real-time visibility** of application health and sync status via the ArgoCD dashboard.
+- **Git as the single source of truth** for Kubernetes workloads.
+
+---
+
+## Technologies Used
+
+- **Terraform:** Provisioned AWS infrastructure (VPC, Subnets, EC2, IAM, S3, DynamoDB, CloudWatch).
+- **Ansible:** Automated server configuration using dynamic inventory and playbooks.
+- **Jenkins:** Continuous Integration pipeline with Master/Agent architecture and Groovy Shared Libraries.
+- **Docker:** Containerized microservices for consistent runtime environments.
+- **Kubernetes (EKS/Local):** Orchestration for scaling, service discovery, and self-healing workloads.
+- **ArgoCD:** Continuous Deployment via GitOps, enabling automated sync and rollback from Git.
+- **AWS:** Cloud provider for compute, networking, monitoring, and storage services.
+
+---
+**Maintained by Mohamed Nagy**
 
