@@ -20,5 +20,6 @@ ENV PATH=/root/.local/bin:$PATH
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+# Run the app with Gunicorn in production
+CMD ["gunicorn", "--workers", "4", "--threads", "2", "--bind", "0.0.0.0:5000", "app:app"]
 
